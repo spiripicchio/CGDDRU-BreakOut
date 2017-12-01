@@ -10,7 +10,9 @@ public class GameController : MonoBehaviour
 	public int rows;
 	public float horizontalGap;
 	public float verticalGap;
-	public GameObject text;
+	public GameObject gameOverText;
+	public GameObject winText;
+	public GameObject ball;
 
 	float _startPositionX = -7;
 	float _startPositionY = 3;
@@ -36,20 +38,38 @@ public class GameController : MonoBehaviour
 		_numberOfBricks--;
 		if (_numberOfBricks == 0)
 		{
-			Debug.Log("WIN");
+			StartCoroutine(WinSequence());
 		}
 	}
 
 	public void OnBallOutOfBounds()
 	{
-//		StartCoroutine(DeadSequence());
+		StartCoroutine(DeadSequence());
 	}
 
 	IEnumerator DeadSequence()
 	{
-		text.SetActive(true);
+		gameOverText.SetActive(true);
 
 		yield return new WaitForSeconds(5);
+
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}
+
+	IEnumerator WinSequence()
+	{
+		Destroy(ball);
+
+		for (int i = 0; i < 5; ++i)
+		{
+			winText.SetActive(true);
+
+			yield return new WaitForSeconds(1);	
+
+			winText.SetActive(false);
+
+			yield return new WaitForSeconds(0.5f);
+		}
 
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
